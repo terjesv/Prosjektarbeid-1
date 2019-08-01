@@ -1,0 +1,63 @@
+{% load static %}
+
+{% if not user.is_authenticated %}
+    {% if not request.get_full_path == "/registration" %}
+        <div class="ui form">
+            <div class="four wide column">
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="ui right pointing red basic label">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <button type="button" onclick="show_modal()" class="ui labeled icon button">
+                    <i class="user icon"></i>
+                    Login
+                </button>
+            </div>
+        </div>
+
+        <div class="ui mini modal">
+            <div class="ui form">
+                <form method="post" action="{% url "login_form" %}">
+                    {% csrf_token %}
+                    <div class="fluid ui left icon input">
+                        <i class="user icon"></i>
+                        <input id="username" name="username" type="text" placeholder="Username" />
+                    </div>
+                    <div class="fluid ui left icon input">
+                        <i class="lock icon"></i>
+                        <input id="password" name="password" type="password" placeholder="Password"/>
+                    </div>
+                    <button class="fluid ui blue button" type="submit">
+                        Login
+                    </button>
+                     <a href="{% url "registration_form" %}" class="fluid ui button">
+                        Register
+                    </a>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            function show_modal() {
+                $('.ui.modal').modal('show');
+            }
+            function hide_modal() {
+                $('.ui.modal').modal('hide');
+            }
+        </script>
+    {% endif %}
+
+{% else %}
+    <form id="logout" method="post" action="{% url "login_form" %}">
+        {% csrf_token %}
+        <a href="javascript:;" onclick="document.getElementById('logout').submit();" class="ui button">
+            Logout
+        </a>
+    </form>
+{% endif %}
+

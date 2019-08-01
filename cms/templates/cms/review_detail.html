@@ -1,0 +1,26 @@
+{% if post.reviews.all %}
+    <div class="ui comments">
+        <h3 class="ui dividing header">Reviews</h3>
+            {% for review in post.reviews.all %}
+                <div class="comment">
+                    <div class="author">
+                        {{ review.editor }}
+                    </div>
+                    <div class="text">
+                        {{ review.content }}
+                    </div>
+                    {% if request.user == review.editor or request.user.is_superuser %}
+                        <div class="actions">
+                            <form id="delete_review" action="{% url "delete_review" pk=review.pk %}" method="post">
+                                {% csrf_token %}
+                                <a href="javascript:;" onclick="document.getElementById('delete_review').submit();">
+                                    Delete
+                                </a>
+                            </form>
+                         </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

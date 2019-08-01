@@ -1,0 +1,74 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'website/css/menu.css' %}">
+
+<div class="ui inverted vertical masthead center aligned segment">
+    <div class="ui text container">
+        <h1 class="ui inverted header">
+            Life on a Branch
+        </h1>
+        <h2>Generic subheader</h2>
+    </div>
+
+</div>
+
+{% with url_name=request.resolver_match.url_name %}
+<div class="ui borderless main menu sticky" inverted>
+    <div class="ui text container">
+        <a href="{% url 'post_list' %}" class="{% if url_name == 'post_list' %}active{% endif %} item">Home</a>
+
+        {% if perms.cms.change_post %}
+            <a href=" {% url 'draft_list' %}" class="{% if url_name == 'draft_list' %}active{% endif %} item">
+                Drafts
+            </a>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'saved_posts' %}" class="{% if url_name == 'saved_posts' %}active{% endif %} item">Saved</a>
+        {% endif %}
+
+        {% if perms.cms.add_post %}
+            <a href="{% url 'post_form' %}" class="{% if url_name == 'post_form' %}active{% endif %} item">New</a>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'subscriptions' %}" class="{% if url_name == 'subscriptions' %}active{% endif %} item">Subscriptions</a>
+        {% endif %}
+
+        {% if perms.cms.add_category %}
+            <a href="{% url 'create_category' %}" class="{% if url_name == 'create_category' %}active{% endif %} item">Add Category</a>
+        {% endif %}
+
+        {% if user.is_superuser %}
+            <a href="/admin" class="item">
+                Admin
+            </a>
+        {% endif %}
+
+        <div class="ui right floated item">
+            {% include "registration/login_form.html" %}
+        </div>
+
+    </div>
+</div>
+{% endwith %}
+
+<script>
+    $(document)
+        .ready(function() {
+            // fix main menu to page on passing
+            $('.main.menu').visibility({
+                type: 'fixed'
+            });
+            $('.overlay').visibility({
+                type: 'fixed',
+                offset: 80
+            });
+            // show dropdown on hover
+            $('.main.menu  .ui.dropdown').dropdown({
+                on: 'hover'
+            });
+        });
+
+    /* $('.ui.main.menu > .ui.text.container').css( "border", "3px double red" ); */
+</script>

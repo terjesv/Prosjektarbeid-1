@@ -1,0 +1,8 @@
+<p id="post-category-list">
+    Categories:
+    {% for category in categories %}
+        <button class="ui tiny white button">{{ category }}</button>
+    {% empty %}
+        <em>None</em>
+    {% endfor %}
+</p>

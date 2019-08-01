@@ -1,0 +1,8 @@
+<p id="post-author-list">
+    Authors:
+    {% for author in authors %}
+        <button class="ui tiny white button">{{ author }}</button>
+    {% empty %}
+        <em>None</em>
+    {% endfor %}
+</p>

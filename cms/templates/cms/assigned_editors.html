@@ -1,0 +1,5 @@
+{% if post.assigned_users.all %}
+    <p>Being reviewed by:
+        {{ post.assigned_users.all|join:", " }}
+    </p>
+{% endif %}

@@ -1,0 +1,62 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% load auth_extras %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+
+<div class="ui text container">
+    <h1>Posts</h1>
+
+    <div class="ui grid">
+        <div class="two wide column">
+            <h3>Filter:</h3>
+        </div>
+        <div class="eight wide column">
+            <select onchange="filterPosts()" id="dropdown" multiple="" class="ui fluid search dropdown">
+                {% for category in categories %}
+                  <option value="{{ category.name }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <p></p>
+    <div id="post_list">
+    {% for post in posts %}
+        <div  id="{{ post.pk }}" class="post-container">
+            <h2>
+                <a href="{% url "post_detail" pk=post.pk %}">
+                    {{ post.title }}
+                </a>
+            </h2>
+            <p>{{ post.content|truncatechars:140 }}</p>
+            {% with post.categories.all as categories %}
+                {% include "cms/category_list.html" %}
+            {% endwith %}
+            {% with post.authors.all as authors %}
+                {% include "cms/authors_list.html" %}
+            {% endwith %}
+            {% if not post.published %}
+
+                {% include "cms/assigned_editors.html" %}
+
+                {% include "cms/content_status.html" %}
+
+                {% if perms.cms.add_review %}
+                    {% include "cms/assign_buttons.html" %}
+                {% endif %}
+
+            {% endif %}
+        <p><br></p>
+        </div>
+    {% endfor %}
+    </div>
+
+    <script type="text/javascript" src="{% static 'cms/javascript/sort_by_category.js' %}"></script>
+    <script>
+        $('.ui.dropdown').dropdown();
+    </script>
+
+{% endblock %}

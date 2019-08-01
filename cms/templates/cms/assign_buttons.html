@@ -1,0 +1,12 @@
+{% if request.user in post.assigned_users.all %}
+    <form method="post" action="{% url "assign_post" pk=post.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="ui red button">Quit review</button>
+    </form>
+{% else %}
+    <form method="post" action="{% url "assign_post" pk=post.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="ui green button">Review</button>
+    </form>
+{% endif %}
+

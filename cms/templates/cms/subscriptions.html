@@ -1,0 +1,88 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% load auth_extras %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+
+<div class="ui text container">
+    <h1>Subscriptions</h1>
+
+    <h3>You subscribe to:</h3>
+    <div class="ui equal width grid">
+        <div class="column">
+            {% with user.subscription.authors.all as authors %}
+                {% include 'cms/authors_list.html' %}
+            {% endwith %}
+        </div>
+
+        <div class="left aligned column">
+        {% with user.subscription.categories.all as categories %}
+            {% include 'cms/category_list.html' %}
+        {% endwith %}
+        </div>
+    </div>
+
+    <div class="ui grid">
+        <div class="two wide column">
+            <h3>Filter:</h3>
+        </div>
+        <div class="eight wide column">
+            <select onchange="filterPosts()" id="dropdown" multiple="" class="ui fluid search dropdown">
+                {% for category in categories %}
+                  <option value="{{ category.name }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="four wide column">
+            <button type="button" onclick="show_modal()" class="ui tiny blue button">Manage subscriptions</button>
+        </div>
+    </div>
+    <p></p>
+    <div id="post_list">
+    {% for post in posts %}
+        <div  id="{{ post.pk }}" class="post-container">
+            <h2>
+                <a href="{% url "post_detail" pk=post.pk %}">
+                    {{ post.title }}
+                </a>
+            </h2>
+            <p>{{ post.content|truncatechars:140 }}</p>
+            {% with post.categories.all as categories %}
+                {% include "cms/category_list.html" %}
+            {% endwith %}
+            {% with post.authors.all as authors %}
+                {% include "cms/authors_list.html" %}
+            {% endwith %}
+            {% if not post.published %}
+
+                {% include "cms/assigned_editors.html" %}
+
+                {% if request.user|has_group:"editor" %}
+                    {% include "cms/assign_buttons.html" %}
+                {% endif %}
+
+            {% endif %}
+        <p></p>
+        </div>
+    {% endfor %}
+    </div>
+
+    {% if user.is_authenticated %}
+        {% include "cms/update_subscriptions_modal.html" %}
+    {% endif %}
+
+    <script type="text/javascript" src="{% static 'cms/javascript/sort_by_category.js' %}"></script>
+    <script>
+        function show_modal() {
+            $('.ui.modal').modal('show');
+        }
+        function hide_modal() {
+            $('.ui.modal').modal('hide');
+        }
+        $('.ui.dropdown').dropdown();
+    </script>
+
+{% endblock %}

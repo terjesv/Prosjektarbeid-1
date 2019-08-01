@@ -1,0 +1,12 @@
+{% load static %}
+<div class="ui form">
+    <button onclick="show_form()" id="show-review-form-button" class="ui white button">Add review</button>
+    <div class="field" id="review-form">
+        <form method="post" action="{% url "add_review" pk=post.pk %}" >
+            {% csrf_token %}
+            {{ review_form }}
+            <button type="submit" class="ui green button">Submit</button>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="{% static 'cms/javascript/hide_review_form.js' %}"></script>

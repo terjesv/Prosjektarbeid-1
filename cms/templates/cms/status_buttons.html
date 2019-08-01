@@ -1,0 +1,13 @@
+{% if perms.cms.change_post %}
+    {% if not post.complete %}
+        <form method="post" action="{% url "content_status" pk=post.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="ui green button">Complete</button>
+        </form>
+    {% else %}
+        <form method="post" action="{% url "content_status" pk=post.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="ui red button">Incomplete</button>
+        </form>
+    {% endif %}
+{% endif %}

@@ -1,0 +1,11 @@
+<div class="ui modal">
+    <div class="ui text container">
+        <form class="ui form" method="POST" action="{% url 'update_subscription' pk=request.user.subscription.pk %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="ui primary button">Save</button>
+            <button type="reset" onclick="hide_modal()" class="ui button">Cancel</button>
+        </form>
+    </div>
+    <p><br></p>
+</div>

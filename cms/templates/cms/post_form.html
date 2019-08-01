@@ -1,0 +1,17 @@
+{% extends 'website/base.html' %}
+
+{% block body %}
+<div class="ui text container">
+
+    <h1>Post</h1>
+
+    <form method="post" class="ui form" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save" class="ui blue button">
+    </form>
+
+</div>
+<script>
+        $('.ui.dropdown').dropdown();
+</script>
+{% endblock %}

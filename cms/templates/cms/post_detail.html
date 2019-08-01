@@ -1,0 +1,117 @@
+{% extends 'website/base.html'%}
+{% load static %}
+{% load auth_extras %}
+
+{% block body %}
+<div class="ui text container">
+
+    {% if not post.published %}
+        {% include "cms/assigned_editors.html" %}
+    {% endif %}
+
+    {% if not post.published %}
+        {% include "cms/content_status.html" %}
+    {% endif %}
+
+    <h1>{{ post.title }}</h1>
+    {% if post.image %}
+        <img src = '{{ post.image.url }}' width = "100%">
+    {% endif %}
+
+    {% with post.categories.all as categories %}
+        {% include "cms/category_list.html" %}
+    {% endwith %}
+    {% with post.authors.all as authors %}
+        {% include "cms/authors_list.html" %}
+    {% endwith %}
+
+    <p>{{ post.content }}</p>
+
+    {% if user.is_authenticated %}
+        <div class="ui relaxed grid">
+            {% if request.user in post.assigned_users.all or request.user in post.authors.all  %}
+                <div class="two wide column">
+                    <a href="{% url "post_update" pk=post.pk %}" class="ui blue button">Edit</a>
+                </div>
+            {% endif %}
+
+            <div class="two wide column">
+                <form method="post" action="{% url "save_post" pk=post.pk %}">
+                    {% csrf_token %}
+                    {% if user in post.saved_by_users.all %}
+                        <button type="submit" class="ui red button">Unsave</button>
+                    {% else %}
+                        <button type="submit" class="ui green button">Save</button>
+                    {% endif %}
+                </form>
+            </div>
+
+            {% if not post.published and perms.cms.publish_post %}
+                <div class="two wide column">
+                    <button type="button" onclick="show_modal()" class="ui tiny blue button">Assign editors</button>
+                </div>
+                <div class="two wide column">
+                    <form method="post" action="{% url "publish_post" pk=post.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="ui blue button">Publish</button>
+                    </form>
+                </div>
+            {% endif %}
+
+
+            {%  if post.published and perms.cms.publish_post %}
+                <div class = "two wide column">
+                    <form method="post" action = "{% url "publish_post" pk=post.pk %}">
+                        {% csrf_token %}
+                        <button type = "submit" class="ui red button">Unpublish</button>
+                    </form>
+                </div>
+            {% endif %}
+
+            {% if request.user in post.authors.all and not post.published%}
+                <div class = "two wide column">
+                    <a href="{% url "delete_post" pk=post.pk %}" class="ui red button">Delete</a>
+                </div>
+            {% endif %}
+
+            {% if not post.published and perms.cms.add_review %}
+                <div class="two wide column">
+                    {% include "cms/assign_buttons.html" %}
+                </div>
+
+                <div class="two wide column">
+                    {% include "cms/status_buttons.html" %}
+                </div>
+            {% endif %}
+        </div>
+
+        {% endif %}
+        {% if not post.published %}
+            {% if request.user in post.assigned_users.all or perms.cms.publish_post%}
+                {% include "cms/review_form.html" %}
+                {% include "cms/review_detail.html" %}
+            {% endif %}
+        </div>
+        {% endif %}
+    <p><br></p>
+</div>
+
+{% if perms.cms.assign_editors %}
+{% include "cms/assign_authors_modal.html" %}
+{% endif %}
+
+<script type="text/javascript" src="{% static 'cms/javascript/sort_by_category.js' %}"></script>
+<script>
+ function show_modal() {
+     $('.ui.modal').modal('show');
+ }
+ function hide_modal() {
+     $('.ui.modal').modal('hide');
+ }
+ $('.ui.dropdown').dropdown();
+</script>
+
+{% endblock %}
+
+
+

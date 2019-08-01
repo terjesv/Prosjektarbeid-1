@@ -1,0 +1,29 @@
+{% extends 'website/base.html' %}
+
+{% block body %}
+
+<div class="ui text container">
+    <div class="ui form">
+
+        <h3>Register</h3>
+
+        <form method="post" action="{% url "registration_form" %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="ui green button">
+                Submit
+            </button>
+        </form>
+
+        {% if messages %}
+            {% for message in messages %}
+                <br>
+                <div class="ui red basic label">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
